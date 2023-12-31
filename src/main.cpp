@@ -3,10 +3,20 @@
 #include "vec3.h"
 #include <iostream>
 
-color ray_color(const Ray& r) {
-    // vec3 unit_direction = unit_vector(r.direction());
-    // vec3 c = (vec3(unit_direction.x(), unit_direction.y(), unit_direction.z()) + vec3(1, 1, 1) ) / 2.0;
-    // return color(c);
+bool hit_sphere(const ray& ray) {
+    point3 center = point3(0, 0, -2.0);
+    double radius = 1.0;
+    // formula
+    vec3 oc = ray.origin() - center;
+    auto a = dot(ray.direction(), ray.direction());
+    auto b = 2 * oc;
+    auto c = dot(oc, oc) - radius*radius;
+    return (dot(b, b) - (4*a*c)) >= 0;
+}
+
+color ray_color(const ray& r) {
+    if (hit_sphere(r))
+        return color(1, 1, 0);
     vec3 unit_direction = unit_vector(r.direction());
     auto a = 0.5*(unit_direction.y() + 1.0);
     return (1.0-a)*color(1.0, 1.0, 1.0) + a*color(0.5, 0.7, 1.0);
@@ -52,9 +62,9 @@ int main() {
 
             // std::clog << i << ", " << j << " :: " << pixel_center << std::endl; //&&&&&
 
-            Ray ray = Ray(camera_center, pixel_center - camera_center);
+            ray r = ray(camera_center, pixel_center - camera_center);
             // auto pixel_color = color(0, 0, (pixel_position.y() + 1) / 2.0);
-            color pixel_color = ray_color(ray);
+            color pixel_color = ray_color(r);
             write_color(std::cout, pixel_color);
             // std::clog << unit_vector(ray.direction()) << std::endl; //&&&&&
         }
