@@ -3,20 +3,28 @@
 #include "vec3.h"
 #include <iostream>
 
-bool hit_sphere(const ray& ray) {
-    point3 center = point3(0, 0, -2.0);
-    double radius = 1.0;
+double hit_sphere(const point3& center, const double& radius, const ray& ray) {
     // formula
     vec3 oc = ray.origin() - center;
     auto a = dot(ray.direction(), ray.direction());
-    auto b = 2 * oc;
+    auto b = 2 * dot(oc, ray.direction());
     auto c = dot(oc, oc) - radius*radius;
-    return (dot(b, b) - (4*a*c)) >= 0;
+    auto discriminant = b*b - (4*a*c);
+    if (discriminant < 0) {
+        return -1;
+    }
+    else {
+        return (-b - sqrt(discriminant)) / 2.0*a;
+    }
 }
 
 color ray_color(const ray& r) {
-    if (hit_sphere(r))
-        return color(1, 1, 0);
+    auto t = hit_sphere(point3(0,0,-1), 0.5, r);
+    if (t >= 0) {
+        point3 sphere_center = point3(0, 0, -1);
+        vec3 normal = unit_vector(r.at(t) - sphere_center);
+        return 0.5*color(normal.x()+1, normal.y()+1, normal.z()+1);
+    }
     vec3 unit_direction = unit_vector(r.direction());
     auto a = 0.5*(unit_direction.y() + 1.0);
     return (1.0-a)*color(1.0, 1.0, 1.0) + a*color(0.5, 0.7, 1.0);
