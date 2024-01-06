@@ -14,7 +14,7 @@ double hit_sphere(const point3& center, const double& radius, const ray& ray) {
         return -1;
     }
     else {
-        return (-b - sqrt(discriminant)) / 2.0*a;
+        return (-b - sqrt(discriminant)) / (2.0*a);
     }
 }
 
