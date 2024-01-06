@@ -19,11 +19,13 @@ double hit_sphere(const point3& center, const double& radius, const ray& ray) {
 }
 
 color ray_color(const ray& r) {
-    auto t = hit_sphere(point3(0,0,-1), 0.5, r);
+    point3 sphere_center = point3(0, 0, -1);
+    auto t = hit_sphere(sphere_center, 0.5, r);
     if (t >= 0) {
-        point3 sphere_center = point3(0, 0, -1);
         vec3 normal = unit_vector(r.at(t) - sphere_center);
-        return 0.5*color(normal.x()+1, normal.y()+1, normal.z()+1);
+        normal = (normal + vec3(1, 1, 1)) / 2.0;
+        return color(normal);
+        // return 0.5*color(normal.x()+1, normal.y()+1, normal.z()+1);
     }
     vec3 unit_direction = unit_vector(r.direction());
     auto a = 0.5*(unit_direction.y() + 1.0);
