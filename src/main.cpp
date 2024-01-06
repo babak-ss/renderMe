@@ -6,15 +6,15 @@
 double hit_sphere(const point3& center, const double& radius, const ray& ray) {
     // formula
     vec3 oc = ray.origin() - center;
-    auto a = dot(ray.direction(), ray.direction());
-    auto b = 2 * dot(oc, ray.direction());
-    auto c = dot(oc, oc) - radius*radius;
-    auto discriminant = b*b - (4*a*c);
+    auto a = ray.direction().length_squared();
+    auto half_b = dot(oc, ray.direction());
+    auto c = oc.length_squared() - radius*radius;
+    auto discriminant = half_b*half_b - (a*c);
     if (discriminant < 0) {
         return -1;
     }
     else {
-        return (-b - sqrt(discriminant)) / (2.0*a);
+        return (-half_b - sqrt(discriminant)) / a;
     }
 }
 
@@ -25,7 +25,6 @@ color ray_color(const ray& r) {
         vec3 normal = unit_vector(r.at(t) - sphere_center);
         normal = (normal + vec3(1, 1, 1)) / 2.0;
         return color(normal);
-        // return 0.5*color(normal.x()+1, normal.y()+1, normal.z()+1);
     }
     vec3 unit_direction = unit_vector(r.direction());
     auto a = 0.5*(unit_direction.y() + 1.0);
