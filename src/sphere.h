@@ -12,9 +12,9 @@ public:
     sphere() : center(point3(0, 0, -1)), radius(0.5) {}
     sphere(point3 center, double radius) : center(center), radius(radius) {}
 
-    bool is_hit (const ray& ray) override { return !(determinant(ray) < 0); }
+    bool is_hit (const ray& ray) { return !(determinant(ray) < 0); }
 
-    color get_color (const ray& ray) override {
+    color get_color (const ray& ray) {
         double det = determinant(ray);
         vec3 normal = unit_vector(ray.at(det) - center);
         normal = (normal + vec3(1, 1, 1)) / 2.0;
