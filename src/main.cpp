@@ -6,14 +6,15 @@
 
 sphere s1 = sphere(point3(0, 0, -1), 0.5);
 sphere s2 = sphere(point3(2.0, 0.5, -5), 1.0);
-hittable* hits[] = {&s1, &s2};
+hittable* hittables[] = {&s1, &s2};
+hit_record hit;
 
 color ray_color(const ray& ray) {
     for (int i = 0; i < 2; i++) {
-        if (hits[i]->is_hit(ray)) {
-            // return color(1, 0, 0);
-            return hits[i]->get_color(ray);
-        }    
+        if (hittables[i]->hit(ray, 0, 1000, hit)) {
+            vec3 normal = (hit.n + vec3(1, 1, 1)) / 2.0;
+            return color(normal);
+        }
     }
 
     vec3 unit_direction = unit_vector(ray.direction());
