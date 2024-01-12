@@ -1,5 +1,6 @@
 #ifndef SPHERE
 #define SPHERE
+
 #include "hittable.h"
 #include <cmath>
 #include "vec3.h"
