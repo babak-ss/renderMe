@@ -10,7 +10,7 @@ public:
     sphere() : center(point3(0, 0, -1)), radius(0.5) {}
     sphere(point3 center, double radius) : center(center), radius(radius) {}
 
-    bool hit(const ray& ray, double ray_tmin, double ray_tmax, hit_record& rec) const override {
+    bool hit(const ray& ray, interval ray_t, hit_record& rec) const override {
         vec3 oc = ray.origin() - center;
         double a = ray.direction().length_squared();
         double half_b = dot(oc, ray.direction());
@@ -20,9 +20,9 @@ public:
         
         // Find the nearest root that lies in the acceptable range.
         double root =(- half_b - sqrt(discriminant)) / a;
-        if (root > ray_tmax || root < ray_tmin) {
+        if (!ray_t.surrounds(root)) {
             root = (- half_b + sqrt(discriminant)) / a;
-            if(root > ray_tmax || root < ray_tmin)
+            if(!ray_t.surrounds(root))
                 return false;
         }
 

@@ -21,15 +21,15 @@ public:
         objects.push_back(object);
     }
 
-    bool hit(const ray& ray, double ray_tmin, double ray_tmax, hit_record& rec) const override {
+    bool hit(const ray& ray, interval ray_t, hit_record& rec) const override {
         hit_record tmp_rec;
         bool hit_anything = false;
-        double distance_to_closest = ray_tmax;
+        double distance_to_closest_so_far = ray_t.max;
 
-        for (const auto& object : objects) { // TODO: wtf is this loop!?
-            if (object->hit(ray, ray_tmin, distance_to_closest, tmp_rec)) {
+        for (const auto& object : objects) {
+            if (object->hit(ray, interval(ray_t.min, distance_to_closest_so_far), tmp_rec)) {
                 hit_anything = true;
-                distance_to_closest = tmp_rec.t;
+                distance_to_closest_so_far = tmp_rec.t;
                 rec = tmp_rec;
             }
         }
